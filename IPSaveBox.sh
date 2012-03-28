@@ -1,12 +1,10 @@
 #!/bin/sh
 
-
-
 #IPSaveBox.sh/IPGetBox.sh
 
-meName="$0"
+meName=`basename "$0"`
 
-function StdErr(){
+StdErr(){
 	message="$1"
 	echo "$message" >&2
 }
@@ -14,7 +12,7 @@ function StdErr(){
 IPSaveArgsList="{h,help}{1$file,-f,--file|:2$pc,-p,--pc|:3$ip,-i,--ip|:,--force}"
 IPGetArgsList="{h,help}{1$file,-f,--file|:2$pc,-p,--pc}"
 
-function Usage(){
+Usage(){
 
 if [ "$meName" = "IPSaveBox.sh" ]; then
 	UsageIPSave
@@ -29,14 +27,14 @@ PC=""
 ForceUpdate=0
 
 
-function GetOpt(){
+GetOpt(){
 	args="$@"
 	index=0
 	
-	for arg in "$args"
+	for arg in $args
 do
 	index=$(($index + 1 ))
-	
+	echo "${index} $arg"
 	IFS_OLD="{$IFS}"
 	IFS="="
 	echo arg| read paramName paramVal;
@@ -45,7 +43,7 @@ do
 	case "$arg" in
 		"-h"|"--help") 
 			Usage
-			return 0;;
+			exit 0;;
 		
 		"-f"|"--file")
 			File=paramVal;;
@@ -63,15 +61,15 @@ do
 				1) File="${arg}";;
 				2) PC="${arg}";;
 				3) IP="${arg}";;
-				*) Usage; return 1;;
+				*) Usage; exit 1;;
 			esac
 			;;
     esac
 done
 }
 
-function UsageIPSave(){
-	StdErr << 1EOF
+UsageIPSave(){
+	cat << EOF
 Usage:  $meName [options]
         $meName FileName PC_Name IP_Address
         cat IP_Address | $meName FileName [PC_Name]
@@ -85,9 +83,10 @@ Arguments:
     -p, --pc [optional]	 - Current pc name (if not set, receives from \`hostname\`)
     --force  [optional]	 - force update value in file
 EOF
+>&2
 }
-function UsageIPGet(){
-	StdErr << 1EOF
+UsageIPGet(){
+	cat  << EOF
 Usage:  $meName [options]
         $meName FileName [PC_Name]
 Arguments:
@@ -96,6 +95,7 @@ Arguments:
     -f, --file=FileName  - Full path to file
     -p, --pc [optional]	 - Current pc name (if not set, receives from \`hostname\`)
 EOF
+>&2
 }
 
 GetOpt "$@"
@@ -112,16 +112,17 @@ fi
 
 if [ x"${File}" = "x" ]; then
 	StdErr "IPs file name is required"
+	Usage
 	return 1
 fi
 
 if ! [ -f "${File}" ]; then
-	StdErr "File \"${File}\" is not exists, creating"
+	StdErr "File \"${File}\" don't exist, creating"
 	echo "#PCName|IPAddress|UpdateTime">"${File}"
 fi
 
 
-saved_ip=`cat "${File}" | grep "${PC}" | cut -f2 -d'|'`
+saved_ip=`cat "${File}" | grep "${PC}" | cut -f2- -d'|'`
 
 if [ "$meName" = "IPSaveBox.sh" ]; then
 	echo ${saved_ip}
