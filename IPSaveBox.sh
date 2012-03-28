@@ -124,7 +124,7 @@ fi
 
 saved_ip=`cat "${File}" | grep "${PC}" | cut -f2- -d'|'`
 
-if [ "$meName" = "IPSaveBox.sh" ]; then
+if [ "$meName" = "IPGetBox.sh" ]; then
 	echo ${saved_ip}
 	return 0;
 fi
