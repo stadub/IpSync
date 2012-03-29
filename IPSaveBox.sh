@@ -34,25 +34,23 @@ GetOpt(){
 	for arg in $args
 do
 	index=$(($index + 1 ))
-	
-	IFS_OLD="{$IFS}"
-	IFS="="
-	echo "$arg" | read paramName paramVal;
-	IFS="${IFS_OLD}"
-	
+		
+	paramName="${arg%%=*}"
+	paramVal="${arg#*=}"
+
 	case "$paramName" in
 		"-h"|"--help") 
 			Usage
 			exit 0;;
 		
 		"-f"|"--file")
-			File=paramVal;;
+			File="$paramVal";;
 				
 		"-p"|"--pc")
-			PC=paramVal;;
+			PC="$paramVal";;
 				
 		"-i"|"--ip")
-			IP=paramVal;;
+			IP="$paramVal";;
 		
 		"--force")
 			ForceUpdate=1;;
