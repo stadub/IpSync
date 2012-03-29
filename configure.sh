@@ -37,7 +37,14 @@ do
 	CopyFile  ${bin_dir} ${file}
 done
 
-cron_file='CronExec.sh'
-cron_dir='/etc/cron.hourly'
+GetIpCommand='/usr/bin/GetIp.sh "eth0"'
 
-CopyFile ${cron_dir} ${cron_file}
+SaveBoxCommmand='/usr/bin/IPSaveBox.sh "/root/Dropbox/Settings/IPs"'
+
+cron_file="CronExec.sh"
+
+echo "${GetIpCommand} | ${SaveBoxCommmand}" > "/etc/cron.hourly/${cron_file}"
+chmod +x  "/etc/cron.hourly/${cron_file}"
+
+echo "${GetIpCommand} | ${SaveBoxCommmand} --force" > "/etc/cron.daily/${cron_file}"
+chmod +x  "/etc/cron.daily/${cron_file}"
