@@ -34,13 +34,13 @@ GetOpt(){
 	for arg in $args
 do
 	index=$(($index + 1 ))
-	echo "${index} $arg"
+	
 	IFS_OLD="{$IFS}"
 	IFS="="
-	echo arg| read paramName paramVal;
+	echo "$arg" | read paramName paramVal;
 	IFS="${IFS_OLD}"
 	
-	case "$arg" in
+	case "$paramName" in
 		"-h"|"--help") 
 			Usage
 			exit 0;;
@@ -121,11 +121,17 @@ if ! [ -f "${File}" ]; then
 	echo "#PCName|IPAddress|UpdateTime">"${File}"
 fi
 
+line=`cat "${File}"| grep "${PC}"`
 
-saved_ip=`cat "${File}" | grep "${PC}" | cut -f2- -d'|'`
+#read pc_name ip_address date_update <<<"$line"
+
+pc_name="${line%%|*}"
+line="${line#*|}"
+ip_address="${line%%|*}"
+date_set="${line#*|}"
 
 if [ "$meName" = "IPGetBox.sh" ]; then
-	echo ${saved_ip}
+	echo "${ip_address} ${date_set}"
 	return 0;
 fi
 
@@ -135,8 +141,8 @@ if [ x"${IP}" = "x" ]; then
 	return 1
 fi
 
-if [ "$saved_ip" = "${IP}" ]; then	
-	if [ $ForceUpdate -eq 1 ]; then
+if [ "$ip_address" = "${IP}" ]; then	
+	if [ $ForceUpdate -ne 1 ]; then
 		StdErr "Saved IP Address is actual, no change requared"
 		return 0;
 	fi
