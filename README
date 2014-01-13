@@ -1,0 +1,3 @@
+Saves Ip address of the linux based pc to file on Dropbox
+
+file path is set in file configure.sh parm ip_file_path (default value /root/Dropbox/Settings/IPs)

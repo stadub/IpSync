@@ -1,5 +1,7 @@
 #/bin/sh
 
+ip_file_path='/root/Dropbox/Settings/IPs'
+
 bin_files='IPSaveBox.sh IPGetBox.sh GetIp.sh'
 bin_dir='/usr/bin'
 
@@ -39,7 +41,7 @@ done
 
 GetIpCommand='/usr/bin/GetIp.sh "eth0"'
 
-SaveBoxCommmand='/usr/bin/IPSaveBox.sh "/root/Dropbox/Settings/IPs"'
+SaveBoxCommmand="/usr/bin/IPSaveBox.sh ${ip_file_path}"
 
 cron_file="CronExec.sh"
 
